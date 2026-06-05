@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+:root {
+  --orange: #f97316;
+  --orange-light: #fff7ed;
+  --orange-dark: #ea580c;
+  --teal: #0d9488;
+  --sidebar-w: 260px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #f8f9fa;
+  color: #1a1a2e;
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; }
+}

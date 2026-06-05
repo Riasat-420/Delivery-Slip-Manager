@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+}
+
+model Company {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  deliverySlips DeliverySlip[]
+}
+
+model Material {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+}
+
+model DeliverySlip {
+  id           Int            @id @default(autoincrement())
+  serialNo     String         @unique
+  location     String         @default("OLD CITY 1")
+  date         String
+  time         String
+  siteNo       String?
+  lpoNo        String?
+  vehicleNo    String
+  companyName  String
+  tip          String?
+  cashTrip     String?
+  refund       String?
+  receiverName String?
+  driverName   String?
+  createdAt    DateTime       @default(now())
+  company      Company?       @relation(fields: [companyId], references: [id])
+  companyId    Int?
+  items        DeliveryItem[]
+}
+
+model DeliveryItem {
+  id           Int          @id @default(autoincrement())
+  description  String
+  m3           Float?
+  ton          Float?
+  trips        String?
+  slip         DeliverySlip @relation(fields: [slipId], references: [id], onDelete: Cascade)
+  slipId       Int
+}
+
+model TaxInvoice {
+  id           Int              @id @default(autoincrement())
+  invoiceNo    String           @unique
+  date         String
+  time         String
+  customerName String
+  vatReg       String?
+  poNo         String?
+  delNo        String?
+  receivedBy   String?
+  discount     Float            @default(0)
+  subtotal     Float            @default(0)
+  vatTotal     Float            @default(0)
+  grandTotal   Float            @default(0)
+  amountWords  String?
+  createdAt    DateTime         @default(now())
+  items        TaxInvoiceItem[]
+}
+
+model TaxInvoiceItem {
+  id          Int        @id @default(autoincrement())
+  description String
+  unit        String     @default("M3")
+  qty         Float      @default(1)
+  rate        Float      @default(0)
+  amount      Float      @default(0)
+  taxPct      Float      @default(5)
+  vatAmount   Float      @default(0)
+  grossAmount Float      @default(0)
+  invoice     TaxInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoiceId   Int
+}
+
+model Counter {
+  id       Int    @id @default(autoincrement())
+  location String @unique
+  count    Int    @default(0)
+}
